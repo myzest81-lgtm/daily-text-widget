@@ -103,11 +103,11 @@ class MainActivity : Activity() {
         val data = DailyTextRepo.load(this)
         if (data != null) {
             pHeading.text = data.heading
-            pTheme.text = DailyTextRepo.styled(data.themeHtml, link, italic = true)
+            pTheme.text = DailyTextRepo.themeStyled(data.themeHtml, link)
             pBody.text = DailyTextRepo.styled(data.bodyHtml, link)
         } else {
             pHeading.text = "10월 27일 화요일"
-            pTheme.text = DailyTextRepo.styled("<em>정신을 새롭게 함으로 변화되십시오.—</em><a href='#'><em>로마 12:2</em></a><em>.</em>", link)
+            pTheme.text = DailyTextRepo.themeStyled("<em>정신을 새롭게 함으로 변화되십시오.—</em><a href='#'><em>로마 12:2</em></a><em>.</em>", link)
             pBody.text = "한때 사나운 짐승 같은 성격을 가지고 있던 사람들이 하느님의 영의 도움으로 삶을 크게 변화시켰습니다."
         }
 

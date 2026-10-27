@@ -102,6 +102,18 @@ object DailyTextRepo {
         Html.fromHtml(html, Html.FROM_HTML_MODE_LEGACY).toString().trim()
 
     /** HTML → 위젯에 쓸 글자. 성구 링크는 파란색으로 바꾼다(위젯은 링크 자체를 지원하지 않음). */
+    /** 주제 성구용: 성구 출처 앞의 대시(—)에서 항상 줄을 바꾼다. */
+    fun themeStyled(html: String, linkColor: Int): CharSequence {
+        val sb = SpannableStringBuilder(styled(html, linkColor, italic = true))
+        val dash = sb.lastIndexOf('—')
+        if (dash > 0) {
+            var cut = dash
+            while (cut > 0 && sb[cut - 1].isWhitespace()) cut--
+            sb.replace(cut, dash, "\n")
+        }
+        return sb
+    }
+
     fun styled(html: String, linkColor: Int, italic: Boolean = false): CharSequence {
         val src = Html.fromHtml(html, Html.FROM_HTML_MODE_LEGACY)
         val sb = SpannableStringBuilder(src)

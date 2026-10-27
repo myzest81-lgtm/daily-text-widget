@@ -35,7 +35,7 @@ class WidgetService : RemoteViewsService() {
             val vis = if (WidgetSettings.showBody(ctx)) android.view.View.VISIBLE else android.view.View.GONE
             v.setViewVisibility(R.id.body, vis)
             v.setViewVisibility(R.id.source, vis)
-            v.setTextViewText(R.id.theme, DailyTextRepo.styled(d.themeHtml, link, italic = true))
+            v.setTextViewText(R.id.theme, DailyTextRepo.themeStyled(d.themeHtml, link))
             v.setTextViewText(R.id.body, DailyTextRepo.styled(d.bodyHtml, link))
             v.setOnClickFillInIntent(R.id.item_root, Intent())
             return v
