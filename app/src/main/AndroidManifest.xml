@@ -18,6 +18,14 @@
             </intent-filter>
         </activity>
 
+        <activity
+            android:name=".OpenActivity"
+            android:exported="false"
+            android:excludeFromRecents="true"
+            android:noHistory="true"
+            android:taskAffinity=""
+            android:theme="@android:style/Theme.NoDisplay" />
+
         <receiver
             android:name=".DailyTextWidget"
             android:exported="true"

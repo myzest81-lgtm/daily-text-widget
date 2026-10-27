@@ -58,6 +58,9 @@ class DailyTextWidget : AppWidgetProvider() {
                     }
                 }
                 updateAll(app, loading = false)
+            } catch (e: Exception) {
+                // 위젯을 그리다 문제가 생겨도 앱 전체가 멈추지 않게 한다.
+                DailyTextRepo.saveError(app, e.message ?: e.javaClass.simpleName)
             } finally {
                 pending.finish()
             }
@@ -96,7 +99,7 @@ class DailyTextWidget : AppWidgetProvider() {
                 // 새로 고침 버튼
                 v.setOnClickPendingIntent(R.id.refresh, broadcast(ctx, ACTION_REFRESH, 1))
                 // 머리글 탭 → 원문 열기
-                v.setOnClickPendingIntent(R.id.heading, openPage(ctx, today, 3))
+                v.setOnClickPendingIntent(R.id.heading, openPage(ctx, today, 3, mutable = false))
 
                 // 본문 목록(스크롤 가능)
                 val svc = Intent(ctx, WidgetService::class.java).apply {
@@ -106,7 +109,7 @@ class DailyTextWidget : AppWidgetProvider() {
                 @Suppress("DEPRECATION")
                 v.setRemoteAdapter(R.id.list, svc)
                 v.setEmptyView(R.id.list, R.id.empty)
-                v.setPendingIntentTemplate(R.id.list, openPage(ctx, today, 4))
+                v.setPendingIntentTemplate(R.id.list, openPage(ctx, today, 4, mutable = true))
 
                 mgr.updateAppWidget(id, v)
             }
@@ -117,13 +120,16 @@ class DailyTextWidget : AppWidgetProvider() {
         private fun dayName(d: LocalDate): String =
             arrayOf("월요일", "화요일", "수요일", "목요일", "금요일", "토요일", "일요일")[d.dayOfWeek.value - 1]
 
-        private fun openPage(ctx: Context, date: LocalDate, code: Int): PendingIntent {
-            val i = Intent(Intent.ACTION_VIEW, Uri.parse(DailyTextRepo.pageUrl(date)))
+        /**
+         * 원문 페이지 열기. Android 14부터 '변경 가능 + 암시적 인텐트' 조합은 금지되어 앱이 멈추므로,
+         * 우리 앱의 OpenActivity를 명시적으로 지정하고 그 화면이 브라우저를 열게 한다.
+         */
+        private fun openPage(ctx: Context, date: LocalDate, code: Int, mutable: Boolean): PendingIntent {
+            val i = Intent(ctx, OpenActivity::class.java)
+                .setData(Uri.parse(DailyTextRepo.pageUrl(date)))
                 .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-            return PendingIntent.getActivity(
-                ctx, code, i,
-                PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_MUTABLE
-            )
+            val flag = if (mutable) PendingIntent.FLAG_MUTABLE else PendingIntent.FLAG_IMMUTABLE
+            return PendingIntent.getActivity(ctx, code, i, PendingIntent.FLAG_UPDATE_CURRENT or flag)
         }
 
         fun broadcast(ctx: Context, action: String, code: Int): PendingIntent {
