@@ -32,6 +32,9 @@ class WidgetService : RemoteViewsService() {
             v.setTextViewTextSize(R.id.theme, TypedValue.COMPLEX_UNIT_SP, WidgetSettings.themeSize(size))
             v.setTextViewTextSize(R.id.body, TypedValue.COMPLEX_UNIT_SP, WidgetSettings.bodySize(size))
             v.setTextViewTextSize(R.id.source, TypedValue.COMPLEX_UNIT_SP, WidgetSettings.sourceSize(size))
+            val vis = if (WidgetSettings.showBody(ctx)) android.view.View.VISIBLE else android.view.View.GONE
+            v.setViewVisibility(R.id.body, vis)
+            v.setViewVisibility(R.id.source, vis)
             v.setTextViewText(R.id.theme, DailyTextRepo.styled(d.themeHtml, link, italic = true))
             v.setTextViewText(R.id.body, DailyTextRepo.styled(d.bodyHtml, link))
             v.setOnClickFillInIntent(R.id.item_root, Intent())

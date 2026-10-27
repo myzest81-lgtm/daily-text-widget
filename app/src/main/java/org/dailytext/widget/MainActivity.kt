@@ -27,6 +27,7 @@ class MainActivity : Activity() {
     private lateinit var opacityLabel: TextView
     private lateinit var sizeBar: SeekBar
     private lateinit var opacityBar: SeekBar
+    private var bodySwitch: android.widget.Switch? = null
 
     private fun dp(x: Int) = (x * resources.displayMetrics.density).toInt()
 
@@ -138,6 +139,27 @@ class MainActivity : Activity() {
             setPadding(dp(4), dp(2), 0, 0)
         })
 
+        // ---- 본문 표시 ----
+        bodySwitch = android.widget.Switch(this).apply {
+            text = "본문도 표시하기"
+            textSize = 16f
+            setTextColor(getColor(R.color.title))
+            isChecked = WidgetSettings.showBody(this@MainActivity)
+            setPadding(dp(4), dp(24), 0, 0)
+            setOnCheckedChangeListener { _, on ->
+                WidgetSettings.setShowBody(this@MainActivity, on)
+                applyPreview()
+                pushToWidgets()
+            }
+        }
+        root.addView(bodySwitch)
+        root.addView(TextView(this).apply {
+            text = "끄면 날짜와 주제 성구만 보입니다. 위젯을 누르면 언제든 원문 전체가 열립니다."
+            textSize = 13f
+            setTextColor(muted)
+            setPadding(dp(4), dp(2), 0, 0)
+        })
+
         // ---- 기본값 ----
         root.addView(Button(this).apply {
             text = "기본값으로 되돌리기 (15 · 90%)"
@@ -190,6 +212,9 @@ class MainActivity : Activity() {
         pBody.setTextSize(TypedValue.COMPLEX_UNIT_SP, WidgetSettings.bodySize(size))
         pSource.setTextSize(TypedValue.COMPLEX_UNIT_SP, WidgetSettings.sourceSize(size))
         cardBg.alpha = WidgetSettings.alpha255(opacity)
+        val vis = if (WidgetSettings.showBody(this)) android.view.View.VISIBLE else android.view.View.GONE
+        pBody.visibility = vis
+        pSource.visibility = vis
     }
 
     private fun pushToWidgets() {

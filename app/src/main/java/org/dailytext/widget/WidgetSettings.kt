@@ -17,6 +17,13 @@ object WidgetSettings {
     fun opacity(ctx: Context): Int =
         ctx.getSharedPreferences(PREFS, Context.MODE_PRIVATE).getInt("opacity", DEFAULT_OPACITY)
 
+    /** 본문·출처 표시 여부. 기본은 날짜와 주제 성구만 보인다. */
+    fun showBody(ctx: Context): Boolean =
+        ctx.getSharedPreferences(PREFS, Context.MODE_PRIVATE).getBoolean("showBody", false)
+
+    fun setShowBody(ctx: Context, v: Boolean) =
+        ctx.getSharedPreferences(PREFS, Context.MODE_PRIVATE).edit().putBoolean("showBody", v).apply()
+
     fun setFontSize(ctx: Context, v: Int) =
         ctx.getSharedPreferences(PREFS, Context.MODE_PRIVATE).edit().putInt("size", v).apply()
 
