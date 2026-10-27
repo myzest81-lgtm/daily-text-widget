@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">오늘의 성구 위젯</string>
+    <string name="widget_name">오늘의 성구</string>
+    <string name="widget_desc">날마다 성경을 검토함—오늘의 성구와 본문</string>
+    <string name="loading">불러오는 중…</string>
+    <string name="empty">성구를 불러오는 중입니다.\n잠시 후에도 비어 있으면 ↻를 눌러 주세요.</string>
+    <string name="refresh">새로 고침</string>
+    <string name="source">날마다 성경을 검토함—2026</string>
+</resources>
