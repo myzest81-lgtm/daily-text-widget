@@ -8,6 +8,7 @@ import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import android.util.TypedValue
 import android.widget.RemoteViews
 import java.time.LocalDate
 import java.time.LocalTime
@@ -78,8 +79,27 @@ class DailyTextWidget : AppWidgetProvider() {
             val saved = DailyTextRepo.load(ctx)
             val isToday = saved?.date == today.toString()
 
+            val size = WidgetSettings.fontSize(ctx)
+            val opacity = WidgetSettings.opacity(ctx)
+
             for (id in ids) {
                 val v = RemoteViews(ctx.packageName, R.layout.widget)
+
+                // 사용자 설정: 배경 투명도와 글자 크기
+                v.setInt(R.id.bg, "setImageAlpha", WidgetSettings.alpha255(opacity))
+                v.setTextViewTextSize(R.id.heading, TypedValue.COMPLEX_UNIT_SP, WidgetSettings.headingSize(size))
+                v.setTextViewTextSize(R.id.status, TypedValue.COMPLEX_UNIT_SP, WidgetSettings.statusSize(size))
+                v.setTextViewTextSize(R.id.empty, TypedValue.COMPLEX_UNIT_SP, WidgetSettings.bodySize(size))
+
+                // 설정 버튼 → 설정 화면
+                v.setOnClickPendingIntent(
+                    R.id.settings,
+                    PendingIntent.getActivity(
+                        ctx, 5,
+                        Intent(ctx, MainActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK),
+                        PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+                    )
+                )
 
                 // 머리글: 날짜(페이지의 제목, 없으면 휴대폰 날짜)
                 val heading = if (isToday && saved!!.heading.isNotBlank()) saved.heading

@@ -6,5 +6,6 @@
     <string name="loading">불러오는 중…</string>
     <string name="empty">성구를 불러오는 중입니다.\n잠시 후에도 비어 있으면 ↻를 눌러 주세요.</string>
     <string name="refresh">새로 고침</string>
+    <string name="settings">설정</string>
     <string name="source">날마다 성경을 검토함—2026</string>
 </resources>

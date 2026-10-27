@@ -2,6 +2,7 @@ package org.dailytext.widget
 
 import android.content.Context
 import android.content.Intent
+import android.util.TypedValue
 import android.widget.RemoteViews
 import android.widget.RemoteViewsService
 import java.time.LocalDate
@@ -27,6 +28,10 @@ class WidgetService : RemoteViewsService() {
             val v = RemoteViews(ctx.packageName, R.layout.widget_item)
             val d = data ?: return v
             val link = ctx.getColor(R.color.link)
+            val size = WidgetSettings.fontSize(ctx)
+            v.setTextViewTextSize(R.id.theme, TypedValue.COMPLEX_UNIT_SP, WidgetSettings.themeSize(size))
+            v.setTextViewTextSize(R.id.body, TypedValue.COMPLEX_UNIT_SP, WidgetSettings.bodySize(size))
+            v.setTextViewTextSize(R.id.source, TypedValue.COMPLEX_UNIT_SP, WidgetSettings.sourceSize(size))
             v.setTextViewText(R.id.theme, DailyTextRepo.styled(d.themeHtml, link, italic = true))
             v.setTextViewText(R.id.body, DailyTextRepo.styled(d.bodyHtml, link))
             v.setOnClickFillInIntent(R.id.item_root, Intent())
